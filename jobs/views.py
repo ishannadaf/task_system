@@ -46,3 +46,9 @@ def all_jobs(request):
         })
 
     return Response(data)
+
+
+@api_view(['DELETE'])
+def delete_all_jobs(request):
+    Job.objects.all().delete()
+    return Response({"message": "All jobs deleted"})

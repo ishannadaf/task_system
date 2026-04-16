@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from jobs.views import create_job, job_status, dashboard, all_jobs
+from jobs.views import create_job, job_status, dashboard, all_jobs, delete_all_jobs
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -25,4 +25,5 @@ urlpatterns = [
     path('api/job/', create_job),
     path('api/job/<int:job_id>/', job_status),
     path('api/jobs/', all_jobs),
+    path('api/delete-all/', delete_all_jobs),
 ]
