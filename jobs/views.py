@@ -41,7 +41,8 @@ def all_jobs(request):
             "id": job.id,
             "name": job.name,
             "status": job.status,
-            "result": job.result
+            "result": job.result,
+            "retry_count": job.retry_count
         })
 
     return Response(data)
