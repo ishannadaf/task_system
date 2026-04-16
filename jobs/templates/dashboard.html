@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Processing System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-white p-10">
+
+<h1 class="text-3xl font-bold mb-6 text-center">⚙️ Job Processing System</h1>
+
+<!-- Create Job -->
+<div class="max-w-lg mx-auto bg-gray-800 p-6 rounded mb-6">
+    <input id="jobInput"
+           placeholder="Enter job name..."
+           class="w-full p-3 bg-gray-700 rounded mb-4" />
+
+    <button onclick="createJob()"
+            class="w-full bg-blue-500 p-3 rounded">
+        Create Job
+    </button>
+</div>
+
+<!-- Job List -->
+<div class="max-w-2xl mx-auto bg-gray-800 p-6 rounded">
+    <h2 class="text-xl mb-4">📋 Jobs</h2>
+    <div id="jobList"></div>
+</div>
+
+<script>
+let jobs = [];
+
+// Load all jobs from DB
+async function loadJobs() {
+    const res = await fetch('/api/jobs/');
+    jobs = await res.json();
+    renderJobs();
+}
+
+// Create Job
+async function createJob() {
+    const name = document.getElementById("jobInput").value;
+
+    const res = await fetch('/api/job/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name })
+    });
+
+    const data = await res.json();
+
+    jobs.push({ id: data.job_id, name: name, status: 'pending' });
+
+    document.getElementById("jobInput").value = "";
+}
+
+// Fetch Job Status
+async function fetchJobs() {
+    for (let job of jobs) {
+        const res = await fetch(`/api/job/${job.id}/`);
+        const data = await res.json();
+
+        job.status = data.status;
+        job.result = data.result;
+    }
+
+    renderJobs();
+}
+
+// Render Jobs
+function renderJobs() {
+    const container = document.getElementById("jobList");
+    container.innerHTML = "";
+
+    jobs.forEach(job => {
+        container.innerHTML += `
+            <div class="border-b border-gray-700 p-3">
+                <div><strong>${job.name}</strong></div>
+                <div>Status: ${job.status}</div>
+                <div>Retries: ${job.retry_count}</div>
+                <div class="text-green-400">${job.result || ""}</div>
+            </div>
+        `;
+    });
+}
+
+// Auto refresh every 2 sec
+setInterval(fetchJobs, 2000);
+// Load on page start
+loadJobs();
+</script>
+
+</body>
+</html>
