@@ -56,14 +56,8 @@ async function createJob() {
 
 // Fetch Job Status
 async function fetchJobs() {
-    for (let job of jobs) {
-        const res = await fetch(`/api/job/${job.id}/`);
-        const data = await res.json();
-
-        job.status = data.status;
-        job.result = data.result;
-    }
-
+    const res = await fetch('/api/jobs/');
+    jobs = await res.json();   // 🔥 FULL REFRESH FROM DB
     renderJobs();
 }
 
