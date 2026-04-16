@@ -30,13 +30,6 @@
 <script>
 let jobs = [];
 
-// Load all jobs from DB
-async function loadJobs() {
-    const res = await fetch('/api/jobs/');
-    jobs = await res.json();
-    renderJobs();
-}
-
 // Create Job
 async function createJob() {
     const name = document.getElementById("jobInput").value;
@@ -57,7 +50,7 @@ async function createJob() {
 // Fetch Job Status
 async function fetchJobs() {
     const res = await fetch('/api/jobs/');
-    jobs = await res.json();   // 🔥 FULL REFRESH FROM DB
+    jobs = await res.json();   // 🔥 ALWAYS fresh from DB
     renderJobs();
 }
 
@@ -78,10 +71,11 @@ function renderJobs() {
     });
 }
 
+
 // Auto refresh every 2 sec
 setInterval(fetchJobs, 2000);
 // Load on page start
-loadJobs();
+fetchJobs();
 </script>
 
 </body>
